@@ -4,6 +4,7 @@ package com.example.githubapplication.service;
 import com.example.githubapplication.dto.BranchDto;
 import com.example.githubapplication.dto.RepositoryDto;
 import com.example.githubapplication.mapper.MyMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -17,11 +18,13 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 @Service
+@Slf4j
 public class GitHubApiService {
     private final String GITHUB_API_URL = "https://api.github.com/users/";
     private final String GITHUB_API_URL_BRANCHES = "https://api.github.com/repos/";
     private final RestTemplate restTemplate;
     private final MyMapper myMapper;
+    @Value("${github.access.token}")
     private final String githubAccessToken;
 
 
@@ -32,12 +35,17 @@ public class GitHubApiService {
     }
 
     public List<RepositoryDto> getUserRepositories(String username) {
-
+        if(githubAccessToken == null||githubAccessToken.isEmpty()||githubAccessToken.isBlank()){
+            log.warn("GitHub access token is missing. Please add the token in application.properties.");
+        }
+        log.info("You are searching for repositories for user: {}", username);
         String apiUrl = UriComponentsBuilder.fromHttpUrl(GITHUB_API_URL + username + "/repos")
                 .queryParam("type", "owner")
                 .build()
                 .toUriString();
-
+if(githubAccessToken.isEmpty()){
+    log.info("You are need to add token in application.properties");
+}
         HttpEntity<String> entity = getStringHttpEntity();
 
 
@@ -67,6 +75,7 @@ public class GitHubApiService {
 
 
     public List<BranchDto> getBranchesForRepository(String username, String repositoryName) {
+        log.info("You are searching for branches for user: {} and repository {}", username, repositoryName);
         String branchesUrl = GITHUB_API_URL_BRANCHES + username + "/" + repositoryName + "/branches";
         HttpEntity<String> entity = getStringHttpEntity();
 
