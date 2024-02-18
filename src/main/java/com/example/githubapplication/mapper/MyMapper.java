@@ -33,5 +33,4 @@ public class MyMapper {
         mappedRepository.setBranches(mappedBranches);
         return mappedRepository;
     }
-
 }

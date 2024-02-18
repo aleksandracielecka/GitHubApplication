@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+
 @Service
 @Slf4j
 public class GitHubApiService {
@@ -35,7 +36,7 @@ public class GitHubApiService {
     }
 
     public List<RepositoryDto> getUserRepositories(String username) {
-        if(githubAccessToken == null||githubAccessToken.isEmpty()||githubAccessToken.isBlank()){
+        if (githubAccessToken == null || githubAccessToken.isEmpty() || githubAccessToken.isBlank()) {
             log.warn("GitHub access token is missing. Please add the token in application.properties.");
         }
         log.info("You are searching for repositories for user: {}", username);
@@ -43,9 +44,9 @@ public class GitHubApiService {
                 .queryParam("type", "owner")
                 .build()
                 .toUriString();
-if(githubAccessToken.isEmpty()){
-    log.info("You are need to add token in application.properties");
-}
+        if (githubAccessToken.isEmpty()) {
+            log.info("You are need to add token in application.properties");
+        }
         HttpEntity<String> entity = getStringHttpEntity();
 
 
@@ -92,8 +93,6 @@ if(githubAccessToken.isEmpty()){
         } else {
             throw new RuntimeException("Failed to retrieve branches for repository: " + repositoryName);
         }
-
-
     }
 
     private HttpEntity<String> getStringHttpEntity() {
@@ -102,6 +101,4 @@ if(githubAccessToken.isEmpty()){
         HttpEntity<String> entity = new HttpEntity<>(headers);
         return entity;
     }
-
-
 }

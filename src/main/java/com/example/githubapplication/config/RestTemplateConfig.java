@@ -22,6 +22,5 @@ public class RestTemplateConfig {
         factory.setConnectTimeout(5000);
         factory.setReadTimeout(5000);
         return new BufferingClientHttpRequestFactory(factory);
-
     }
 }
